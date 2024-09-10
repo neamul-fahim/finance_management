@@ -12,7 +12,7 @@ class CustomTextField extends StatefulWidget {
   bool obscurePass;
   dynamic textInputType;
 
-  CustomTextField({Key? key,
+  CustomTextField({super.key,
     required this.textController,
     required this.ErrorMsg,
     required this.HintText,
@@ -21,7 +21,7 @@ class CustomTextField extends StatefulWidget {
     required this.obscurePass,
     required this.textInputType,
 
-  }) : super(key: key);
+  });
 
 
   @override
@@ -95,16 +95,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
 
           hintText: widget.HintText,
-          label:Text(widget.LabelText!),
+          label:Text(widget.LabelText),
 
 
-          labelStyle: TextStyle(
+          labelStyle: const TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w800
           ),
 
 
-          focusedBorder: OutlineInputBorder(
+          focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(
               //style: BorderStyle.solid,
               width: 2.5,
@@ -115,7 +115,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 bottomLeft:Radius.circular(0) ,bottomRight:Radius.circular(10) ),
           ),
 
-          enabledBorder:  UnderlineInputBorder(
+          enabledBorder:  const UnderlineInputBorder(
             borderSide: BorderSide(
               //style: BorderStyle.solid,
               width: 2.5,
@@ -125,7 +125,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
           ),
 
-          errorBorder:UnderlineInputBorder(
+          errorBorder:const UnderlineInputBorder(
             borderSide: BorderSide(
               //style: BorderStyle.solid,
               width: 2.5,
@@ -136,7 +136,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 bottomLeft:Radius.circular(0) ,bottomRight:Radius.circular(10) ),
           ),
 
-          focusedErrorBorder: OutlineInputBorder(
+          focusedErrorBorder: const OutlineInputBorder(
             borderSide: BorderSide(
               //style: BorderStyle.solid,
               width: 2.5,

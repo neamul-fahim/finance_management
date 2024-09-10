@@ -7,7 +7,7 @@ import 'signin.dart';
 import 'custom_textFormField.dart';
 
 class LogIN extends StatefulWidget {
-  const LogIN({Key? key}) : super(key: key);
+  const LogIN({super.key});
 
   @override
   State<LogIN> createState() => _LogINState();
@@ -31,7 +31,7 @@ class _LogINState extends State<LogIN> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white10,elevation: 0.0,iconTheme: IconThemeData(color: Colors.deepPurple),
+        backgroundColor: Colors.white10,elevation: 0.0,iconTheme: const IconThemeData(color: Colors.deepPurple),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -53,7 +53,7 @@ class _LogINState extends State<LogIN> {
               ),
 
               ///Email field  SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-              Container(
+              SizedBox(
                 height:  dynamicHeight*0.15,
 
                 width: dynamicHeight*0.9999,
@@ -70,7 +70,7 @@ class _LogINState extends State<LogIN> {
               ///Email field EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 
               ///Password field   SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-              Container(
+              SizedBox(
                 height:  dynamicHeight*0.15,
                 width: dynamicHeight*0.9999,
 
@@ -92,12 +92,12 @@ class _LogINState extends State<LogIN> {
                 child: MouseRegion(
                   onEnter: (event)=>onHover(true),
                   onExit: (event)=>onHover(false),
-                  child: Container(
+                  child: SizedBox(
                     height: dynamicHeight*0.06,
                     width: dynamicWidth*0.4,
                     child: ElevatedButton(
 
-                        style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.deepPurple)) ,
+                        style:ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.deepPurple)) ,
                         onPressed:() {
                           if(_loginKey.currentState!.validate()){
                             fireBaseLogin(loginEmailController.text, loginPassController.text, context);
@@ -137,7 +137,7 @@ class _LogINState extends State<LogIN> {
                     /// Goto signin page if don't have an account  SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
                     InkWell(
                         onTap: (){
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SignIN()));
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const SignIN()));
                         },
                         child: Container(
                             decoration: BoxDecoration(

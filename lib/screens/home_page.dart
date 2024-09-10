@@ -1,5 +1,6 @@
 // import 'package:finance_management/screens/drawer.dart';
 import 'package:finance_management/screens/drawer.dart';
+import 'package:finance_management/screens/expense_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -13,14 +14,38 @@ class HomePage extends StatelessWidget {
     Size screenSize = MediaQuery.of(context).size;
     return  Scaffold(
       key: _scaffoldKey,
-      drawer: CustomAppDrawer(),
-      // floatingActionButton: FloatingActionButton(
+      drawer: const CustomAppDrawer(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                      SizedBox(
+                        width: screenSize.width*0.4,
         
-      //   onPressed: () {
-      //   _scaffoldKey.currentState?.openDrawer();
-      //   },
-      //   child: Icon(Icons.menu),
-      // ),
+                        child: FloatingActionButton(
+                          backgroundColor:Colors.deepPurple.shade200 ,
+                          onPressed:(){
+                                
+                          },
+                          child: Text('Add Income',style: TextStyle(color: Colors.white),),
+                        ),
+                      ),
+                     SizedBox(
+                        width: screenSize.width*0.4,
+        
+                        child: FloatingActionButton(
+                          backgroundColor:Colors.deepPurple.shade200 ,
+                          onPressed:(){
+                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>AddExpenseScreen()));
+                          },
+                          child: Text('Add Expence',style: TextStyle(color: Colors.white),),
+                        ),
+                      ),
+                      ],
+                     ),
+      ),
       body: Column(
             children: [
                 Stack(
@@ -29,7 +54,7 @@ class HomePage extends StatelessWidget {
                     Container(
                    height: screenSize.height*0.35,
                    width: screenSize.width,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.deepPurple,
                         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40),bottomRight: Radius.circular(40),) 
 
@@ -45,12 +70,12 @@ class HomePage extends StatelessWidget {
                                   onTap: (){
                                     _scaffoldKey.currentState?.openDrawer();
                                   },
-                                  child: Icon(Icons.menu,size: 30,color: Colors.white,)),
+                                  child: const Icon(Icons.menu,size: 30,color: Colors.white,)),
                               ),
 
                             ],
                           ),
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Column(
@@ -74,14 +99,14 @@ class HomePage extends StatelessWidget {
                         width: screenSize.width,
                         decoration: BoxDecoration(
                           color: Colors.deepPurple.shade300,
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          borderRadius: const BorderRadius.all(Radius.circular(20)),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.only(top: 15,left: 25,right: 25,bottom: 15),
                           child: Column(
                             children: [
                                 
-                              Row(//Current Balance
+                              const Row(//Current Balance
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Column( 
@@ -104,14 +129,14 @@ class HomePage extends StatelessWidget {
                                               Row( // down arrow and text(income)
                                                 children: [
                                                   Icon(Icons.arrow_circle_down_outlined,color: Colors.white.withOpacity(0.6),),
-                                                  Padding(
-                                                    padding: const EdgeInsets.all(4.0),
+                                                  const Padding(
+                                                    padding: EdgeInsets.all(4.0),
                                                     child: Text('Income',style: TextStyle(color: Colors.white,),),
                                                   )
                                                 ],
                                               ),
                                 
-                                              Row(
+                                              const Row(
                                                 children: [
                                                   Text("\$ 0",style: TextStyle(color: Colors.white,fontSize: 16,fontWeight: FontWeight.w800,),),
                                                 ],
@@ -125,14 +150,14 @@ class HomePage extends StatelessWidget {
                                               Row( // down arrow and text(expense)
                                                 children: [
                                                   Icon(Icons.arrow_circle_down_outlined,color: Colors.white.withOpacity(0.6),),
-                                                  Padding(
-                                                    padding: const EdgeInsets.all(4.0),
+                                                  const Padding(
+                                                    padding: EdgeInsets.all(4.0),
                                                     child: Text('Expense',style: TextStyle(color: Colors.white,),),
                                                   )
                                                 ],
                                               ),
                                 
-                                              Row(
+                                              const Row(
                                                 children: [
                                                   Text("\$ 0",style: TextStyle(color: Colors.white,fontSize: 16,fontWeight: FontWeight.w800,),),
                                                 ],
@@ -156,7 +181,9 @@ class HomePage extends StatelessWidget {
                 ),
 
                  SizedBox(height: screenSize.height* (0.2-(0.35-0.2)),), // (Positioned Top - (stack first container height - second container height))
-                   Text('hiiiiiiiiiiiiiiii'),
+                   const Text('hiiiiiiiiiiiiiiii'),
+
+                  
         ],
 
         

@@ -1,7 +1,12 @@
 
 
 import 'dart:io' as io;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:finance_management/models/user_data_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 // import '../admin_panel/add_product/add_product_pic.dart';
@@ -10,11 +15,16 @@ import 'custom_textFormField.dart';
 import 'login.dart';
 
 class SignIN extends StatefulWidget {
-  const SignIN({Key? key}) : super(key: key);
+  const SignIN({super.key});
 
   @override
   State<SignIN> createState() => _SignINState();
 }
+
+  FirebaseFirestore firebaseFirestore=FirebaseFirestore.instance;
+  Reference firebaseStorage= FirebaseStorage.instance.ref();
+  User? user=FirebaseAuth.instance.currentUser;
+  FirebaseAuth _firebaseAuth=FirebaseAuth.instance;
 
   
   GlobalKey<FormState> _signinKey= GlobalKey<FormState>();
@@ -38,12 +48,12 @@ class _SignINState extends State<SignIN> {
        body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             ///  Page title SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-            Padding(
-              padding: const EdgeInsets.only(top:30,bottom: 0,right: 0,left:0 ),
+            const Padding(
+              padding: EdgeInsets.only(top:30,bottom: 0,right: 0,left:0 ),
               child: Text("SIGNIN",style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize:35
@@ -51,7 +61,7 @@ class _SignINState extends State<SignIN> {
             ),
             ///  Page title EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
 
@@ -78,7 +88,7 @@ class _SignINState extends State<SignIN> {
                                      content: const Text("Choose one option to upload image"),
                                      actions: [
                                ElevatedButton.icon(
-                                 style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.teal[400])),
+                                 style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.teal[400])),
                                   onPressed:()async{
                                  Navigator.of(context).pop();
 
@@ -95,7 +105,7 @@ class _SignINState extends State<SignIN> {
                                     icon: const Icon(Icons.camera_alt),
                                         label: const Text("Camera")),
                                       ElevatedButton.icon(
-                                       style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.teal[400])),
+                                       style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.teal[400])),
                                   onPressed:()async{
                                    Navigator.of(context).pop();
                                           final ImagePicker picker = ImagePicker();
@@ -201,15 +211,25 @@ class _SignINState extends State<SignIN> {
                   /// Signin button  SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
                   Padding(
                     padding: const EdgeInsets.only(left: 0,right:0 ,top: 2,bottom:0 ),
-                    child: Container(
+                    child: SizedBox(
                       height: dynamicHeight*0.06,
                       width: dynamicWidth*0.4,
                       child: ElevatedButton(
                           onPressed:() {
 
+                            print('11111111111111111111111111');
+                            if(_signinKey.currentState!.validate())
+                               {
+                                 if(proPic!=null) {
+                                   fireBaseSignin(signinEmailController.text,signinPassController.text,context);
+                                 } else {
+                                   Fluttertoast.showToast(msg:"choose a profile picture");
+                                 }
+                               }
+
                           },
-                          style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.deepPurple)) ,
-                          child:Text("Sign in",style: TextStyle(color: Colors.white,fontSize: 25))),
+                          style:ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.deepPurple)) ,
+                          child:const Text("Sign in",style: TextStyle(color: Colors.white,fontSize: 25))),
                     ),
                   ),
                   /// Signin button EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
@@ -221,7 +241,7 @@ class _SignINState extends State<SignIN> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         /// Asking if the user have an existing account  SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-                        Text("Have an account?",style: TextStyle(
+                        const Text("Have an account?",style: TextStyle(
                           color: Colors.deepOrangeAccent,),
                         ),
                         /// Asking if the user have an existing account  EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
@@ -230,7 +250,7 @@ class _SignINState extends State<SignIN> {
                             /// Goto login page if have an account  SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
                         InkWell(
                             onTap: (){
-                              Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>LogIN()));
+                              Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>const LogIN()));
                             },
                             child: Container(
                                 decoration: BoxDecoration(
@@ -238,8 +258,8 @@ class _SignINState extends State<SignIN> {
                                   color: Colors.deepOrangeAccent,
                                 ),
 
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
                                   child: Text("Login"),
                                 )
                             )
@@ -258,3 +278,45 @@ class _SignINState extends State<SignIN> {
   }
 }
                  
+
+                             ///To signup using FirebaseAuth SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+         Future<void> fireBaseSignin(String email,String password,BuildContext context)async {
+
+  _firebaseAuth.createUserWithEmailAndPassword(email: email.trim(), password: password.trim()).then((value){
+
+    Fluttertoast.showToast(msg: "Login successful");
+       saveUserData();///saving user data
+    loginEmailController.text=signinEmailController.text;///if signup is successful the login page will auto fill with signup values
+    loginPassController.text=signinPassController.text;
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const LogIN()));
+  }).catchError((error) {
+    Fluttertoast.showToast(timeInSecForIosWeb: 3,msg: error.message);///Here (.message) is a firebase defined message which describes the specific error occurred
+  });
+  }
+            ///To signup using FirebaseAuth  EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+
+
+        /// TO save user sign up data to firestore SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+  Future<void> saveUserData ()async{
+    ///profile Pic save SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+    var fireStorePath=firebaseStorage.child("finance-management").child("users").child(user!.uid).child("pics");
+    await fireStorePath.putFile(proPic);
+    var imgURL=await fireStorePath.getDownloadURL();
+    ///profile Pic save EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+
+
+     UserDataModel userDataModel=UserDataModel(
+       uid: user!.uid,
+       name: signinNameController.text.trim(),
+       email: signinEmailController.text.trim(),
+       phone: signinPhoneNumberController.text.trim(),
+       address: signinAddressController.text.trim(),
+       profilePicURL: imgURL.trim(),
+     );
+
+    /// user data save SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+    await firebaseFirestore.collection("users").doc(user?.uid).set(userDataModel.toMap());
+    /// user data save EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+     Fluttertoast.showToast(msg: "Data saved successfully");
+  }
+         ///TO save user sign up data to firestore EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
