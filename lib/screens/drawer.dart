@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finance_management/auth/login.dart';
 import 'package:finance_management/auth/signin.dart';
 import 'package:finance_management/screens/expense_screen.dart';
+import 'package:finance_management/screens/income_screen.dart';
 import 'package:finance_management/screens/test.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +114,7 @@ class _CustomAppDrawerState extends State<CustomAppDrawer> {
                       ),
                       /// Drawer options SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
                       
-                      drawerProperty(Icons.arrow_circle_up_outlined, 'All incone',context,()=>const HomeScreen()),
+                      drawerProperty(Icons.arrow_circle_up_outlined, 'All incone',context,()=>const IncomeScreen()),
                       drawerProperty(Icons.arrow_circle_down_outlined, 'All expense',context,()=>const ExpenseScreen()),
 
                       //drawerProperty(Icons.cloud_rounded, 'Weather',context,()=>Weather()),

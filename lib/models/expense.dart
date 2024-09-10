@@ -11,7 +11,7 @@ class Expense {
 
   factory Expense.fromMap(DocumentSnapshot<Map<String,dynamic>> snap) {
 
-     final id = snap.id;
+     final _ = snap.id;
      final data = snap.data();
 
     return Expense(

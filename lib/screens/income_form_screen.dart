@@ -1,6 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finance_management/models/expense.dart';
+import 'package:finance_management/models/income.dart';
 import 'package:finance_management/widget/Add_income_expense_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,19 +11,19 @@ import 'package:flutter/material.dart';
     final FirebaseFirestore _db = FirebaseFirestore.instance;
     User? user = FirebaseAuth.instance.currentUser;
 
-class AddExpenseScreen extends StatelessWidget {
+class AddIncomeScreen extends StatelessWidget {
   final TextEditingController amountController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController dateController= TextEditingController();
-  final TextEditingController _ = TextEditingController();
+  final TextEditingController sourceController = TextEditingController();
 
 
-  AddExpenseScreen({super.key});
+  AddIncomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Expense'),
+      appBar: AppBar(title: const Text('Add Income'),
                    centerTitle: true,
       ),
       body:  Column(
@@ -30,23 +31,24 @@ class AddExpenseScreen extends StatelessWidget {
           AddIncomeExpenseForm(
             formKey:formKey ,
             amountController: amountController,
-            sourceController: _ ,
+            sourceController: sourceController,
             descriptionController: descriptionController,
             dateController: dateController,
-            incomeOrExpense: 'expence',
+            incomeOrExpense: 'income',
             ),
           ElevatedButton(
                 onPressed: () {
                   if(formKey.currentState!.validate()){
                     
                     double amount = double.parse(amountController.text);
+                    String source = sourceController.text;
                     String description = descriptionController.text;
                     DateTime date = DateTime.parse(dateController.text);
                    
-                    saveExpenseData(amount,description,date,context);
+                    saveIncomeData(amount,source,description,date,context);
                   }
                 },
-                child: Text('Add Expense'),
+                child: const Text('Add Income'),
               ),
         ],
       )    );
@@ -54,21 +56,21 @@ class AddExpenseScreen extends StatelessWidget {
 }
 
 
-Future <void> saveExpenseData ( double amount, String description, DateTime date, BuildContext context) async{
+Future <void> saveIncomeData ( double amount,String source, String description, DateTime date, BuildContext context) async{
 
-Expense expense = Expense(amount: amount, description: description, date: date);
+Income expense = Income(amount: amount,source: source, description: description, date: date);
 
 
 try {
-  await _db.collection("users").doc(user!.uid).collection("expenses").doc().set(expense.toMap());
+  await _db.collection("users").doc(user!.uid).collection("incomes").doc().set(expense.toMap());
   // Success message
   ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Expense added successfully')),
+    const SnackBar(content: Text('Income added successfully')),
   );
 } catch (e) {
   // Error handling
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('Error adding expense: ${e.toString()}')),
+    SnackBar(content: Text('Error adding income: ${e.toString()}')),
   );
 }
 

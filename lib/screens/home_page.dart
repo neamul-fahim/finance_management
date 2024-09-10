@@ -1,6 +1,7 @@
 // import 'package:finance_management/screens/drawer.dart';
 import 'package:finance_management/screens/drawer.dart';
 import 'package:finance_management/screens/expense_form_screen.dart';
+import 'package:finance_management/screens/income_form_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -27,7 +28,7 @@ class HomePage extends StatelessWidget {
                         child: FloatingActionButton(
                           backgroundColor:Colors.deepPurple.shade200 ,
                           onPressed:(){
-                                
+                                Navigator.push(context, MaterialPageRoute(builder:(BuildContext context)=>AddIncomeScreen()));
                           },
                           child: Text('Add Income',style: TextStyle(color: Colors.white),),
                         ),

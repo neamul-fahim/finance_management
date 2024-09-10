@@ -1,6 +1,8 @@
 import 'package:finance_management/firebase_options.dart';
 import 'package:finance_management/provider/expense_provider.dart';
+import 'package:finance_management/provider/income_provider.dart';
 import 'package:finance_management/repository/expense_repository.dart';
+import 'package:finance_management/repository/income_repository.dart';
 import 'package:finance_management/screens/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,8 @@ await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
   runApp(
     MultiProvider(providers: [
      ChangeNotifierProvider(create: (context)=> ExpenseProvider(ExpenseRepository())),
+     ChangeNotifierProvider(create: (context)=> IncomeProvider(IncomeRepository())),
+
 
     ],
     child: MyApp(),
