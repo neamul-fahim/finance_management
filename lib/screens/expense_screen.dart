@@ -1,78 +1,50 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:finance_management/models/expense.dart';
-import 'package:finance_management/widget/Add_income_expense_form.dart';
+import 'package:finance_management/provider/expense_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    final FirebaseFirestore _db = FirebaseFirestore.instance;
-    User? user = FirebaseAuth.instance.currentUser;
-
-class AddExpenseScreen extends StatelessWidget {
-  final TextEditingController amountController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController dateController= TextEditingController();
-
-
-  AddExpenseScreen({super.key});
+class ExpenseScreen extends StatefulWidget {
+  const ExpenseScreen({Key? key}) : super(key: key);
 
   @override
+  _ExpenseScreenState createState() => _ExpenseScreenState();
+}
+
+class _ExpenseScreenState extends State<ExpenseScreen> {
+  @override
+  void initState() {
+    super.initState();
+    final expenseProvider = Provider.of<ExpenseProvider>(context, listen: false);
+    expenseProvider.loadExpenses(FirebaseAuth.instance.currentUser?.uid ?? '');
+  }
+  @override
   Widget build(BuildContext context) {
+    final expenseProvider = Provider.of<ExpenseProvider>(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Expense'),
-                   centerTitle: true,
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('Your Expenses'),
+        iconTheme: const IconThemeData(
+          color: Colors.deepPurple
+        ),
+        ),
+      body: ListView.builder(
+        itemCount: expenseProvider.expenses.length,
+        itemBuilder: (context, index) {
+          final expense = expenseProvider.expenses[index];
+          return Card(
+            child: ListTile(
+              title: Text('Amount: ${expense.amount}'),
+              subtitle: Text('Description: ${expense.description}'),
+              trailing: Text('Date: ${expense.date.toLocal().toString()}'),
+            ),
+          );
+        },
       ),
-      body:  Column(
-        children: [
-          AddIncomeExpenseForm(formKey:formKey ,amountController: amountController,descriptionController: descriptionController,dateController: dateController,),
-          ElevatedButton(
-                onPressed: () {
-                  if(formKey.currentState!.validate()){
-                    // print('======================================================================================================');
-
-                    // print(amountController.text);
-                    // print(descriptionController.text);
-                    // print(dateController.text);
-                    double amount = double.parse(amountController.text);
-                    String description = descriptionController.text;
-                    DateTime date = DateTime.parse(dateController.text);
-                    print('======================================================================================================');
-                    print(amount);
-                    print(description);
-                    print(date);
-
-                    saveExpenseData(amount,description,date,context);
-                  }
-                },
-                child: Text('Add Expense'),
-              ),
-        ],
-      )    );
+    );
   }
 }
 
-
-Future <void> saveExpenseData ( double amount, String description, DateTime date, BuildContext context) async{
-
-Expense expense = Expense(amount: amount, description: description, date: date);
-// print('=============================================================================================================================');
-// print('=============================================================================================================================');
-// print(expense);
-
-
-try {
-  await _db.collection("users").doc(user!.uid).collection("expenses").doc().set(expense.toMap());
-  // Success message
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Expense added successfully')),
-  );
-} catch (e) {
-  // Error handling
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('Error adding expense: ${e.toString()}')),
-  );
-}
-
-}

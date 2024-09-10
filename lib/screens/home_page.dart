@@ -1,6 +1,6 @@
 // import 'package:finance_management/screens/drawer.dart';
 import 'package:finance_management/screens/drawer.dart';
-import 'package:finance_management/screens/expense_screen.dart';
+import 'package:finance_management/screens/expense_form_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -128,7 +128,7 @@ class HomePage extends StatelessWidget {
                                             children: [
                                               Row( // down arrow and text(income)
                                                 children: [
-                                                  Icon(Icons.arrow_circle_down_outlined,color: Colors.white.withOpacity(0.6),),
+                                                  Icon(Icons.arrow_circle_up_outlined,color: Colors.white.withOpacity(0.6),),
                                                   const Padding(
                                                     padding: EdgeInsets.all(4.0),
                                                     child: Text('Income',style: TextStyle(color: Colors.white,),),

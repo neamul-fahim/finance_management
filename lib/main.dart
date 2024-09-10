@@ -1,14 +1,25 @@
 import 'package:finance_management/firebase_options.dart';
+import 'package:finance_management/provider/expense_provider.dart';
+import 'package:finance_management/repository/expense_repository.dart';
 import 'package:finance_management/screens/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 
 Future <void> main() async{
 WidgetsFlutterBinding.ensureInitialized();
 await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
 
-  runApp(const MyApp());
-}
+  runApp(
+    MultiProvider(providers: [
+     ChangeNotifierProvider(create: (context)=> ExpenseProvider(ExpenseRepository())),
+
+    ],
+    child: MyApp(),
+    )
+    
+  );}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

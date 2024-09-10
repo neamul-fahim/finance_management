@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finance_management/auth/login.dart';
 import 'package:finance_management/auth/signin.dart';
+import 'package:finance_management/screens/expense_screen.dart';
 import 'package:finance_management/screens/test.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,36 +33,36 @@ class _CustomAppDrawerState extends State<CustomAppDrawer> {
     // print("UUUUUUUUUUUUUUUUUUUUUUUUUUUU${user.toString()}UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU");
       
       
-    Future<void> fun() async{
-      Map<String, dynamic>? t;
-      ///profile Pic download link SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+    // Future<void> fun() async{
+    //   Map<String, dynamic>? t;
+    //   ///profile Pic download link SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
       
-       try {
-            String user= FirebaseAuth.instance.currentUser!.uid;
+    //    try {
+    //         String user= FirebaseAuth.instance.currentUser!.uid;
 
-         var fireStorePath = firebaseStorage
-             .child("finance-management").child("users").child(user).child("pics");
-         imgURL = await fireStorePath.getDownloadURL();
+    //      var fireStorePath = firebaseStorage
+    //          .child("finance-management").child("users").child(user).child("pics");
+    //      imgURL = await fireStorePath.getDownloadURL();
 
 
-         print('------------------------------------------------------------------------------------------------------------------');
-            print('-------------------${imgURL}---------------------');
-         ///profile Pic download link EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+    //      print('------------------------------------------------------------------------------------------------------------------');
+    //         print('-------------------${imgURL}---------------------');
+    //      ///profile Pic download link EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 
-         final tempJson = await _db.collection("users").doc(user).get();
-          t = tempJson.data();
-          print('---------------------${t}----------------------------');
-       }catch(e){
-        print('EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE');
-         Fluttertoast.showToast(msg: e.toString());
-       }
-      setState(() {
+    //      final tempJson = await _db.collection("users").doc(user).get();
+    //       t = tempJson.data();
+    //       print('---------------------${t}----------------------------');
+    //    }catch(e){
+    //     print('EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE');
+    //      Fluttertoast.showToast(msg: e.toString());
+    //    }
+    //   setState(() {
 
-        once=true;
-        name= t != null ? t["name"]:"Name";
-      });
-    }
-    if( FirebaseAuth.instance.currentUser!=null && !once) fun();
+    //     once=true;
+    //     name= t != null ? t["name"]:"Name";
+    //   });
+    // }
+    // if( FirebaseAuth.instance.currentUser!=null && !once) fun();
 
     double dynamicHeight=MediaQuery.of(context).size.height;
     double dynamicWidth=MediaQuery.of(context).size.width;
@@ -111,10 +112,9 @@ class _CustomAppDrawerState extends State<CustomAppDrawer> {
                         height: 60,
                       ),
                       /// Drawer options SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-                      drawerProperty(Icons.shopping_cart, "Cart", context, () => const HomeScreen()),
-                      drawerProperty(Icons.insert_drive_file_outlined, 'Pet trainer & doctor',context,()=>const HomeScreen()),
-                      drawerProperty(Icons.medical_information_rounded, 'Pet disease and remedy',context,()=>const HomeScreen()),
-                      drawerProperty(Icons.map, 'Find Pet Care Home',context,()=>const HomeScreen()),
+                      
+                      drawerProperty(Icons.arrow_circle_up_outlined, 'All incone',context,()=>const HomeScreen()),
+                      drawerProperty(Icons.arrow_circle_down_outlined, 'All expense',context,()=>const ExpenseScreen()),
 
                       //drawerProperty(Icons.cloud_rounded, 'Weather',context,()=>Weather()),
                      const Divider(
