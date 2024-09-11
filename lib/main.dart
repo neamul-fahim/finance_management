@@ -1,10 +1,13 @@
+import 'package:finance_management/auth/login.dart';
 import 'package:finance_management/firebase_options.dart';
 import 'package:finance_management/provider/expense_provider.dart';
 import 'package:finance_management/provider/income_provider.dart';
 import 'package:finance_management/provider/total_income_expense_provider.dart';
+import 'package:finance_management/provider/user_data_provider.dart';
 import 'package:finance_management/repository/expense_repository.dart';
 import 'package:finance_management/repository/income_repository.dart';
 import 'package:finance_management/screens/home_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +22,8 @@ await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
      ChangeNotifierProvider(create: (context)=> ExpenseProvider(ExpenseRepository())),
      ChangeNotifierProvider(create: (context)=> IncomeProvider(IncomeRepository())),
      ChangeNotifierProvider(create: (context)=> TotalIncomeExpenseProvider()),
+     ChangeNotifierProvider(create: (context)=> UserDataProvider()),
+
 
     ],
     child: MyApp(),
@@ -32,6 +37,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    print('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
+    print(FirebaseAuth.instance.currentUser?.email);
     return MaterialApp(
       title: 'Exin',
       debugShowCheckedModeBanner: false,
@@ -54,7 +61,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: HomePage(),
+      home: FirebaseAuth.instance.currentUser?.uid==null? LogIN():HomePage(),
     );
   }
 }

@@ -17,6 +17,7 @@ class LogIN extends StatefulWidget {
   final GlobalKey<FormState> _loginKey=GlobalKey<FormState>();
   final TextEditingController loginEmailController=TextEditingController();
    final TextEditingController loginPassController=TextEditingController();
+   bool isLoadingLogIn =false;
 
 class _LogINState extends State<LogIN> {
 
@@ -100,10 +101,21 @@ class _LogINState extends State<LogIN> {
                         style:ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.deepPurple)) ,
                         onPressed:() {
                           if(_loginKey.currentState!.validate()){
-                            fireBaseLogin(loginEmailController.text, loginPassController.text, context);
+                             setState(() {
+                                     isLoadingLogIn = true;
+                                    });
+                            fireBaseLogin(loginEmailController.text, loginPassController.text, context)
+                            .then((onValue){
+                              setState(() {
+                                     isLoadingLogIn = false;
+                                    });
+
+                            });
                           }
                         },
-                        child:const Text("LOGIN",style: TextStyle(color: Colors.white,fontSize: 25))),
+                        child: isLoadingLogIn
+                        ? const CircularProgressIndicator()
+                        :const Text("LOGIN",style: TextStyle(color: Colors.white,fontSize: 25))),
                   ),
                 ),
               ):
@@ -178,7 +190,7 @@ class _LogINState extends State<LogIN> {
   }
 }
 
-    void fireBaseLogin(String email,String password,BuildContext context)async{
+   Future <void> fireBaseLogin(String email,String password,BuildContext context)async{
   if(_loginKey.currentState!.validate()) {}
   {
     await _firebaseAuth.signInWithEmailAndPassword(

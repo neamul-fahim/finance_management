@@ -3,6 +3,7 @@
    import 'package:flutter/material.dart';
    import 'signin.dart';
 
+// ignore: must_be_immutable
 class CustomTextField extends StatefulWidget {
   TextEditingController? textController;
   String ErrorMsg;
@@ -56,7 +57,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
 
         showCursor: true,
-        cursorColor: Colors.deepPurple,
+        cursorColor: Colors.deepPurple.shade300,
         obscureText: widget.obscurePass,
         obscuringCharacter: "*",
         // cursorHeight: 30,
@@ -95,31 +96,31 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
 
           hintText: widget.HintText,
-          label:Text(widget.LabelText),
+          label:Text(widget.LabelText,style: TextStyle(color: Colors.black.withOpacity(0.5),),),
 
 
-          labelStyle: const TextStyle(
-              color: Colors.black,
+          labelStyle: TextStyle(
+              color: Colors.black.withOpacity(0.5),
               fontWeight: FontWeight.w800
           ),
 
 
-          focusedBorder: const OutlineInputBorder(
+          focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
               //style: BorderStyle.solid,
               width: 2.5,
-              color: Colors.deepPurple,
+              color: Colors.deepPurple.shade300,
             ),
 
-            borderRadius: BorderRadius.only(topLeft:Radius.circular(10) ,topRight:Radius.circular(0) ,
-                bottomLeft:Radius.circular(0) ,bottomRight:Radius.circular(10) ),
+            borderRadius: BorderRadius.only(topLeft:Radius.circular(10) ,topRight:Radius.circular(10) ,
+                bottomLeft:Radius.circular(10) ,bottomRight:Radius.circular(10) ),
           ),
 
-          enabledBorder:  const UnderlineInputBorder(
+          enabledBorder:  UnderlineInputBorder(
             borderSide: BorderSide(
               //style: BorderStyle.solid,
               width: 2.5,
-              color: Colors.deepPurple,
+              color: Colors.deepPurple.shade300,
             ),
 
 

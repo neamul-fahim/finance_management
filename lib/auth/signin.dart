@@ -35,6 +35,7 @@ class SignIN extends StatefulWidget {
   TextEditingController signinConfirmPassController=TextEditingController();
   TextEditingController signinAddressController=TextEditingController();
 
+  bool isLoadingSignIn = false;
    var proPic;
 
 class _SignINState extends State<SignIN> {
@@ -88,7 +89,7 @@ class _SignINState extends State<SignIN> {
                                      content: const Text("Choose one option to upload image"),
                                      actions: [
                                ElevatedButton.icon(
-                                 style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.teal[400])),
+                                 style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.deepPurple.shade300)),
                                   onPressed:()async{
                                  Navigator.of(context).pop();
 
@@ -105,7 +106,7 @@ class _SignINState extends State<SignIN> {
                                     icon: const Icon(Icons.camera_alt),
                                         label: const Text("Camera")),
                                       ElevatedButton.icon(
-                                       style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.teal[400])),
+                                       style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.deepPurple.shade300)),
                                   onPressed:()async{
                                    Navigator.of(context).pop();
                                           final ImagePicker picker = ImagePicker();
@@ -216,12 +217,20 @@ class _SignINState extends State<SignIN> {
                       width: dynamicWidth*0.4,
                       child: ElevatedButton(
                           onPressed:() {
+                           
 
-                            print('11111111111111111111111111');
-                            if(_signinKey.currentState!.validate())
-                               {
+                            if(_signinKey.currentState!.validate()){
+                                 
                                  if(proPic!=null) {
-                                   fireBaseSignin(signinEmailController.text,signinPassController.text,context);
+                                  setState(() {
+                                     isLoadingSignIn = true;
+                                    });
+                                   fireBaseSignin(signinEmailController.text,signinPassController.text,context)
+                                   .then((onValue){
+                                    setState(() {
+                                      isLoadingSignIn = false;
+                                    });
+                                   });
                                  } else {
                                    Fluttertoast.showToast(msg:"choose a profile picture");
                                  }
@@ -229,7 +238,9 @@ class _SignINState extends State<SignIN> {
 
                           },
                           style:ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.deepPurple)) ,
-                          child:const Text("Sign in",style: TextStyle(color: Colors.white,fontSize: 25))),
+                          child: isLoadingSignIn
+                          ?const CircularProgressIndicator()
+                          :const Text("Sign in",style: TextStyle(color: Colors.white,fontSize: 25))),
                     ),
                   ),
                   /// Signin button EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
@@ -279,16 +290,16 @@ class _SignINState extends State<SignIN> {
 }
                  
 
-                             ///To signup using FirebaseAuth SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+                  ///To signup using FirebaseAuth SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
          Future<void> fireBaseSignin(String email,String password,BuildContext context)async {
 
-  _firebaseAuth.createUserWithEmailAndPassword(email: email.trim(), password: password.trim()).then((value){
-
-    Fluttertoast.showToast(msg: "Login successful");
-       saveUserData();///saving user data
-    loginEmailController.text=signinEmailController.text;///if signup is successful the login page will auto fill with signup values
-    loginPassController.text=signinPassController.text;
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const LogIN()));
+  _firebaseAuth.createUserWithEmailAndPassword(email: email.trim(), password: password.trim())
+  .then((value){
+      Fluttertoast.showToast(msg: "Signin successful");
+      saveUserData();///saving user data
+      loginEmailController.text=signinEmailController.text;///if signup is successful the login page will auto fill with signup values
+      loginPassController.text=signinPassController.text;
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const LogIN()));
   }).catchError((error) {
     Fluttertoast.showToast(timeInSecForIosWeb: 3,msg: error.message);///Here (.message) is a firebase defined message which describes the specific error occurred
   });
@@ -315,7 +326,8 @@ class _SignINState extends State<SignIN> {
      );
 
     /// user data save SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-    await firebaseFirestore.collection("users").doc(user?.uid).set(userDataModel.toMap());
+        DocumentReference userInfoRef = firebaseFirestore.collection("users").doc(user!.uid).collection("user_info").doc("info");
+           await userInfoRef.set(userDataModel.toMap());
     /// user data save EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
      Fluttertoast.showToast(msg: "Data saved successfully");
   }

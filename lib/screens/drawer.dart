@@ -1,14 +1,13 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finance_management/auth/login.dart';
-import 'package:finance_management/auth/signin.dart';
+import 'package:finance_management/provider/user_data_provider.dart';
 import 'package:finance_management/screens/expense_screen.dart';
 import 'package:finance_management/screens/income_screen.dart';
-import 'package:finance_management/screens/statistics_report.dart';
 import 'package:finance_management/screens/test.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 class CustomAppDrawer extends StatefulWidget {
   const CustomAppDrawer({super.key,});
@@ -20,59 +19,24 @@ class CustomAppDrawer extends StatefulWidget {
 
 
 class _CustomAppDrawerState extends State<CustomAppDrawer> {
-  final _db=FirebaseFirestore.instance;
-  var name="Name";
-  String imgURL="";
-  bool once=false;
+  // final _db=FirebaseFirestore.instance;
+  // var name="Name";
+  // String imgURL="";
+  // bool once=false;
 
 
   @override
   Widget build(BuildContext context) {
 
-
-
-    // print("UUUUUUUUUUUUUUUUUUUUUUU111111111111111111111111111111111111111111111111UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU");
-    // print("UUUUUUUUUUUUUUUUUUUUUUUUUUUU${user.toString()}UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU");
-      
-      
-    // Future<void> fun() async{
-    //   Map<String, dynamic>? t;
-    //   ///profile Pic download link SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-      
-    //    try {
-    //         String user= FirebaseAuth.instance.currentUser!.uid;
-
-    //      var fireStorePath = firebaseStorage
-    //          .child("finance-management").child("users").child(user).child("pics");
-    //      imgURL = await fireStorePath.getDownloadURL();
-
-
-    //      print('------------------------------------------------------------------------------------------------------------------');
-    //         print('-------------------${imgURL}---------------------');
-    //      ///profile Pic download link EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-
-    //      final tempJson = await _db.collection("users").doc(user).get();
-    //       t = tempJson.data();
-    //       print('---------------------${t}----------------------------');
-    //    }catch(e){
-    //     print('EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE');
-    //      Fluttertoast.showToast(msg: e.toString());
-    //    }
-    //   setState(() {
-
-    //     once=true;
-    //     name= t != null ? t["name"]:"Name";
-    //   });
-    // }
-    // if( FirebaseAuth.instance.currentUser!=null && !once) fun();
-
+    
     double dynamicHeight=MediaQuery.of(context).size.height;
     double dynamicWidth=MediaQuery.of(context).size.width;
-    //final File imageFile;
-    //XFile ? pick;
-   // var pickedImage;
-    
-            return Container(
+
+    final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+    Provider.of<UserDataProvider>(context,listen: false).getUserData(userId);
+
+        return Consumer<UserDataProvider>(builder: (context,userDataProvider,child){
+        return Container(
               height: dynamicHeight,
               width: dynamicWidth*2/3,
               decoration: BoxDecoration(
@@ -100,23 +64,29 @@ class _CustomAppDrawerState extends State<CustomAppDrawer> {
                         ),
                         ///child: finalImageFile==null?
 
-                        child: imgURL.isEmpty?Image.asset("assets/images/profilePic.jpg",fit: BoxFit.fill,)
-                            :Image.network(imgURL,fit: BoxFit.fill,),
+                        child: 
+                        
+                            userDataProvider.isLoading || (userDataProvider.isLoading == false && userDataProvider.userData!.uid.isEmpty)
+                            ?Image.asset("assets/images/profilePic.jpg",fit: BoxFit.fill,)
+                            :Image.network(userDataProvider.userData!.profilePicURL,fit: BoxFit.fill,),
                       ),
                       /// Profile pic EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 
 
-                      Text(name, //appDrawerProvider.appDrawerModelClass.profileName.toString(),
-                          style:const TextStyle(fontSize: 20,fontWeight:FontWeight.w400,color: Colors.white, ) ),///User name
+                      Text(
+                        userDataProvider.isLoading || (userDataProvider.isLoading == false && userDataProvider.userData!.uid.isEmpty)
+                        ? 'Name'
+                        :
+                        userDataProvider.userData!.name, //appDrawerProvider.appDrawerModelClass.profileName.toString(),
+                        style:const TextStyle(fontSize: 20,fontWeight:FontWeight.w400,color: Colors.white, ) ),///User name
 
 
                      const SizedBox(
                         height: 60,
                       ),
                       /// Drawer options SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-                      drawerProperty(Icons.arrow_circle_up_outlined, 'Statistics report',context,()=>const StatisticsReport()),
 
-                      drawerProperty(Icons.arrow_circle_up_outlined, 'All incone',context,()=>const IncomeScreen()),
+                      drawerProperty(Icons.arrow_circle_up_outlined, 'All income',context,()=>const IncomeScreen()),
                       drawerProperty(Icons.arrow_circle_down_outlined, 'All expense',context,()=>const ExpenseScreen()),
 
                       //drawerProperty(Icons.cloud_rounded, 'Weather',context,()=>Weather()),
@@ -127,8 +97,8 @@ class _CustomAppDrawerState extends State<CustomAppDrawer> {
                           indent: 15,
                         endIndent: 15,
                       ),
-                      drawerProperty(Icons.cloud_rounded, 'Signin',context,()=>const SignIN()),
-                      drawerProperty(Icons.cloud_rounded, 'Login',context,()=>const LogIN()),
+                      // drawerProperty(Icons.cloud_rounded, 'Signin',context,()=>const SignIN()),
+                      // drawerProperty(Icons.cloud_rounded, 'Login',context,()=>const LogIN()),
                       drawerProperty(Icons.logout_rounded, 'Logout',context,()=>const HomeScreen()),
                       /// Drawer options EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
                     ],
@@ -136,24 +106,10 @@ class _CustomAppDrawerState extends State<CustomAppDrawer> {
                 ),
               ),
             );
+        });
+            
   }
 
- //  XFile? imageXFile;
- // /// File? finalImageFile;
- //  /// File? tempImage;
- //  Future SelectImage(source)async{
- //    final ImagePicker _picker=ImagePicker();
- //    imageXFile= await _picker.pickImage(source: source);
- //
- //    if (imageXFile==null) return;
- //     /// tempImage=File(imageXFile!.path);
- //    setState(() {
- //     /// finalImageFile=tempImage;
- //    });
- //     //return imageFile;
- //   // final XFile? video= await _picker.pickVideo(source: source);
- //
- //  }
 
 
    /// Function to determine what action is needed to perform when drawer option is pressed   SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
@@ -163,24 +119,13 @@ class _CustomAppDrawerState extends State<CustomAppDrawer> {
           padding: const EdgeInsets.all(8.0),
           child: InkWell(
             onTap: () async{
-              if(drawerOptionIcon==Icons.logout_rounded)///for logout
-              {
-                 FirebaseAuth.instance.signOut().then((value) {
+              if(drawerOptionIcon==Icons.logout_rounded){ // for logout
+                 FirebaseAuth.instance.signOut()
+                 .then((value) {
                    Fluttertoast.showToast(msg: "loged out");
-
-                   //ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("loge out")));
-
-
-                   Navigator.pop(context); ///to close drawer
-                     print("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-
-
-
-
-                  //  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
-                  //    return className();///test purpose
-                  //  }
-                  //  ));
+                    
+                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>LogIN()));
+                  //  Navigator.pop(context); ///to close drawer
 
                 }).catchError((error){
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message)));
@@ -198,13 +143,14 @@ class _CustomAppDrawerState extends State<CustomAppDrawer> {
             },
             child: Row(
               children: [
-                Icon(drawerOptionIcon,color: Colors.black,size: 28),
+                Icon(drawerOptionIcon,color: Colors.white,size: 28),
                 const SizedBox(
                   width: 10,
                 ),
                 Text(drawerOptionName,style: const TextStyle(
                     fontSize: 18,
-                    fontWeight: FontWeight.w400
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
 
                 ),),
               ],

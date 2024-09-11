@@ -12,7 +12,11 @@ class StatisticsReportWidget extends StatelessWidget {
   Widget build(BuildContext context) {
 
     Size screenSize = MediaQuery.of(context).size;
-    return Center(
+    return 
+    totalIncomeExpenseProvider.totals!.incomeAmount < 1 && totalIncomeExpenseProvider.totals!.expenseAmount < 1
+    ?Center(child: Text('Add some income or expence',style: TextStyle(color: Colors.black.withOpacity(0.5),fontSize: 20,),))
+    :
+    Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: PieChart(

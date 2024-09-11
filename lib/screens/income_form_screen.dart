@@ -10,14 +10,24 @@ import 'package:flutter/material.dart';
     final FirebaseFirestore _db = FirebaseFirestore.instance;
     User? user = FirebaseAuth.instance.currentUser;
 
-class AddIncomeScreen extends StatelessWidget {
-  final TextEditingController amountController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController dateController= TextEditingController();
-  final TextEditingController sourceController = TextEditingController();
-
+class AddIncomeScreen extends StatefulWidget {
 
   AddIncomeScreen({super.key});
+
+  @override
+  State<AddIncomeScreen> createState() => _AddIncomeScreenState();
+}
+
+class _AddIncomeScreenState extends State<AddIncomeScreen> {
+  final TextEditingController amountController = TextEditingController();
+
+  final TextEditingController descriptionController = TextEditingController();
+
+  final TextEditingController dateController= TextEditingController();
+
+  final TextEditingController sourceController = TextEditingController();
+
+  bool isLoadingAddIncome = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +47,9 @@ class AddIncomeScreen extends StatelessWidget {
             ),
           ElevatedButton(
                 onPressed: () {
+                  setState(() {
+                    isLoadingAddIncome = true;
+                  });
                   if(formKey.currentState!.validate()){
                     
                     double amount = double.parse(amountController.text);
@@ -44,10 +57,22 @@ class AddIncomeScreen extends StatelessWidget {
                     String description = descriptionController.text;
                     DateTime date = DateTime.parse(dateController.text);
                    
-                    saveIncomeData(amount,source,description,date,context);
+                    saveIncomeData(amount,source,description,date,context)
+                    .then((v){
+                  setState(() {
+                    isLoadingAddIncome = false;
+                    amountController.text = '';
+                    sourceController.text = '';
+                    descriptionController.text = '';
+                    dateController.text = '';
+                    
+                  });
+                    });
                   }
                 },
-                child: const Text('Add Income'),
+                child: isLoadingAddIncome
+                ?const CircularProgressIndicator()
+                :const Text('Add Income'),
               ),
         ],
       )    );

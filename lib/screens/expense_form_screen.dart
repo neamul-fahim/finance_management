@@ -10,14 +10,24 @@ import 'package:flutter/material.dart';
     final FirebaseFirestore _db = FirebaseFirestore.instance;
     User? user = FirebaseAuth.instance.currentUser;
 
-class AddExpenseScreen extends StatelessWidget {
-  final TextEditingController amountController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController dateController= TextEditingController();
-  final TextEditingController _ = TextEditingController();
-
+class AddExpenseScreen extends StatefulWidget {
 
   AddExpenseScreen({super.key});
+
+  @override
+  State<AddExpenseScreen> createState() => _AddExpenseScreenState();
+}
+
+class _AddExpenseScreenState extends State<AddExpenseScreen> {
+  final TextEditingController amountController = TextEditingController();
+
+  final TextEditingController descriptionController = TextEditingController();
+
+  final TextEditingController dateController= TextEditingController();
+
+  final TextEditingController _ = TextEditingController();
+
+   bool isLoadingAddExpence = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,16 +47,30 @@ class AddExpenseScreen extends StatelessWidget {
             ),
           ElevatedButton(
                 onPressed: () {
+                  setState(() {
+                    isLoadingAddExpence = true;
+                  });
                   if(formKey.currentState!.validate()){
                     
                     double amount = double.parse(amountController.text);
                     String description = descriptionController.text;
                     DateTime date = DateTime.parse(dateController.text);
                    
-                    saveExpenseData(amount,description,date,context);
+                    saveExpenseData(amount,description,date,context)
+                    .then((v){
+                     setState(() {
+                       isLoadingAddExpence=false;
+                       amountController.text = '';
+                    descriptionController.text = '';
+                    dateController.text = '';
+
+                     });
+                    });
                   }
                 },
-                child: Text('Add Expense'),
+                child: isLoadingAddExpence
+                ? const CircularProgressIndicator()
+                :const Text('Add Expense'),
               ),
         ],
       )    );
