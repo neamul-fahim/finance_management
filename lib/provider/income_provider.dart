@@ -14,7 +14,6 @@ class IncomeProvider extends ChangeNotifier {
 
   Future<void> loadIncomes(String userId) async {
     try {
-        print('PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP');
 
       final incomes = await _incomeRepository.getAllIncome(userId);
       _incomes = incomes;

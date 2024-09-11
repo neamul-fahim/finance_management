@@ -63,8 +63,9 @@ try {
   await _db.collection("users").doc(user!.uid).collection("expenses").doc().set(expense.toMap());
   // Success message
   ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Expense added successfully')),
-  );
+    const SnackBar(content: Text('Expense added successfully')),);
+
+    updateTotalExpense(amount);
 } catch (e) {
   // Error handling
   ScaffoldMessenger.of(context).showSnackBar(
@@ -72,4 +73,30 @@ try {
   );
 }
 
+}
+
+
+Future <void> updateTotalExpense(double amount)async{
+
+ // Fetch the current total income
+    DocumentReference totalExpenseRef = _db.collection("users").doc(user!.uid).collection("total_expense").doc("total");
+    DocumentSnapshot totalExpenseSnapshot = await totalExpenseRef.get();
+
+    double currentTotalExpense = 0;
+
+    if (totalExpenseSnapshot.exists) {
+      // If total_income exists, retrieve it
+      currentTotalExpense = totalExpenseSnapshot.get("amount");
+    } else {
+      // If total_income doesn't exist, initialize it to 0
+      await totalExpenseRef.set({"amount": 0});
+
+    }
+    
+
+    // Add the new income amount to the total
+    double updatedTotalExpense = currentTotalExpense + amount;
+
+    // Update the total income in Firestore
+    await totalExpenseRef.update({"amount": updatedTotalExpense});
 }

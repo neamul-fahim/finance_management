@@ -1,6 +1,5 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:finance_management/models/expense.dart';
 import 'package:finance_management/models/income.dart';
 import 'package:finance_management/widget/Add_income_expense_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -58,15 +57,16 @@ class AddIncomeScreen extends StatelessWidget {
 
 Future <void> saveIncomeData ( double amount,String source, String description, DateTime date, BuildContext context) async{
 
-Income expense = Income(amount: amount,source: source, description: description, date: date);
+Income income = Income(amount: amount,source: source, description: description, date: date);
 
 
 try {
-  await _db.collection("users").doc(user!.uid).collection("incomes").doc().set(expense.toMap());
+   await _db.collection("users").doc(user!.uid).collection("incomes").doc().set(income.toMap());
   // Success message
   ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Income added successfully')),
-  );
+    const SnackBar(content: Text('Income added successfully')),);
+
+    updateTotalIncome(amount);
 } catch (e) {
   // Error handling
   ScaffoldMessenger.of(context).showSnackBar(
@@ -74,4 +74,30 @@ try {
   );
 }
 
+}
+
+
+Future <void> updateTotalIncome(double amount)async{
+
+ // Fetch the current total income
+    DocumentReference totalIncomeRef = _db.collection("users").doc(user!.uid).collection("total_income").doc("total");
+    DocumentSnapshot totalIncomeSnapshot = await totalIncomeRef.get();
+
+    double currentTotalIncome = 0;
+
+    if (totalIncomeSnapshot.exists) {
+      // If total_income exists, retrieve it
+      currentTotalIncome = totalIncomeSnapshot.get("amount");
+    } else {
+      // If total_income doesn't exist, initialize it to 0
+      await totalIncomeRef.set({"amount": 0});
+
+    }
+    
+
+    // Add the new income amount to the total
+    double updatedTotalIncome = currentTotalIncome + amount;
+
+    // Update the total income in Firestore
+    await totalIncomeRef.update({"amount": updatedTotalIncome});
 }
