@@ -1,7 +1,8 @@
 # finance_management
 
 A new Flutter project.
-![Screenshot_20240918_125314](https://github.com/user-attachments/assets/b8e9b9e9-b0c0-43b1-a72a-ae24d58deff5) ![Screenshot_20240918_125328](https://github.com/user-attachments/assets/9400837b-4188-4ac8-aa8b-a5073af59bb4)
+![Screenshot_20240918_125314](https://github.com/user-attachments/assets/b8e9b9e9-b0c0-43b1-a72a-ae24d58deff5) ![Screenshot_20240918_125328](https://github.com/user-attachments/assets/9400837b-4188-4ac8-aa8b-a5073af59bb4)![Screenshot_20240918_125153](https://github.com/user-attachments/assets/04cb9cbe-4e74-4ce6-bd2a-ffb9dc5733a3)
+
 
 ## Getting Started
 
