@@ -2,9 +2,8 @@
 
 A new Flutter project.
 <p>
-<img width = '200' src = '![Screenshot_20240918_125314](https://github.com/user-attachments/assets/b8e9b9e9-b0c0-43b1-a72a-ae24d58deff5)'> 
-
-<img width = '200' src = '![Screenshot_20240918_125328](https://github.com/user-attachments/assets/9400837b-4188-4ac8-aa8b-a5073af59bb4)' >
+  <img width='200' src='https://github.com/user-attachments/assets/b8e9b9e9-b0c0-43b1-a72a-ae24d58deff5' alt='Screenshot 1'>
+  <img width='200' src='https://github.com/user-attachments/assets/9400837b-4188-4ac8-aa8b-a5073af59bb4' alt='Screenshot 2'>
 </p>
 
 ## Getting Started
